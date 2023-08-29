@@ -1,19 +1,13 @@
 const express = require("express");
-const {
-  fetchAll,
-  deleteOne,
-  findById,
-  postData,
-  updateData,
-} = require("../controllers/products.controller");
+const ProductController = require("../controllers/products.controller");
 const productValidator = require("../middleware/validator");
 const router = express.Router();
 
-router.get("/", fetchAll);
-router.get("/find-by-id/:id", findById);
-router.delete("/delete/:id", deleteOne);
+router.get("/", ProductController.fetchAll);
+router.get("/find-by-id/:id", ProductController.findById);
+router.delete("/delete/:id", ProductController.deleteOne);
 
-router.post("/insert", productValidator, postData);
-router.patch("/update/:id", updateData);
+router.post("/insert", productValidator, ProductController.postData);
+router.patch("/update/:id", ProductController.updateData);
 
 module.exports = router;
