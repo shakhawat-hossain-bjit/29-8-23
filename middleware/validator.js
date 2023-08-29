@@ -1,6 +1,5 @@
-const { failure } = require("../util/common");
-
 const productValidator = (req, res, next) => {
+  let newProduct = req.body;
   let error = {};
   if (newProduct.hasOwnProperty("id")) {
     error.id = "Id should not be passed in body";
@@ -39,7 +38,8 @@ const productValidator = (req, res, next) => {
   }
 
   req.error = error;
+  req.newProduct = newProduct;
   next();
 };
 
-module.exports = createValidation;
+module.exports = productValidator;

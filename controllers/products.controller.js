@@ -1,7 +1,6 @@
 const Product = require("../models/Product");
 const { insertInLog } = require("../server/logFile");
 const { success, failure } = require("../utils/common");
-const { productValidator } = require("../utils/validator");
 
 exports.fetchAll = async (req, res) => {
   try {
@@ -49,7 +48,7 @@ exports.findById = async (req, res) => {
   const { id } = req.params;
   if (id) {
     let result = await Product.getSingleData(id);
-    let logFileResult = await insertInLog("GET_ONE_PRODUCT", params.id);
+    let logFileResult = await insertInLog("GET_ONE_PRODUCT", id);
     try {
       if (result.success) {
         if (result?.data)
@@ -73,8 +72,7 @@ exports.findById = async (req, res) => {
 
 exports.postData = async (req, res) => {
   try {
-    let newProduct = req.body;
-    let error = productValidator(newProduct);
+    let { newProduct, error } = req;
 
     if (Object.keys(error).length > 0) {
       return res

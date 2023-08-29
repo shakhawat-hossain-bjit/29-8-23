@@ -4,17 +4,25 @@ app.use(express.json());
 
 const dotenv = require("dotenv");
 const router = require("./routes/products.route");
+const { failure, success } = require("./utils/common");
 dotenv.config();
 
-app.get("/", (req, res) => {
-  res.send("Route is working! YaY!");
-});
-
 app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    console.log(err);
+    return res.status(400).send(failure("Invalid JSON provided"));
+  }
   next();
 });
 
 app.use("/products", router);
+
+app.get("/", (req, res) => {
+  return res.status(200).send(success("Hello world"));
+});
+app.use("*", (req, res) => {
+  return res.status(400).send(failure("There is no such route"));
+});
 
 app.listen(8000, () => {
   //   console.log(process.env.MY_SECRET_KEY);
