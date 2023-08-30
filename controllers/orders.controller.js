@@ -7,9 +7,9 @@ class OrerController {
     const { id } = req.params;
     // console.log(id);
     if (id) {
-      let result = await Order.getSingleData(id);
-      let logFileResult = await insertInLog("GET_ONE_ORDER", id);
       try {
+        let result = await Order.getSingleData(id);
+        let logFileResult = await insertInLog("GET_ONE_ORDER", id);
         if (result.success) {
           if (result?.data)
             return res

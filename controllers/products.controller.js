@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
 const { insertInLog } = require("../server/logFile");
 const { success, failure } = require("../utils/common");
+const { validationResult } = require("express-validator");
 
 class ProductController {
   fetchAll = async (req, res) => {
@@ -78,24 +79,44 @@ class ProductController {
 
   postData = async (req, res) => {
     try {
-      let { newProduct, error } = req;
+      // let { newProduct, error } = req;
+      // if (Object.keys(error).length > 0) {
+      //   return res
+      //     .status(400)
+      //     .send(failure("Data is not provided as per requirement", error));
+      // }
+      // let result = await Product.insertData(newProduct);
+      // let logFileResult = await insertInLog("POST_PRODUCT", result.id);
+      // if (result.success) {
+      //   return res.status(200).send(
+      //     success("successfully added the data", {
+      //       ...newProduct,
+      //       id: result.id,
+      //     })
+      //   );
+      // } else {
+      //   return res.status(400).send(failure("failed to add the data"));
+      // }
 
-      if (Object.keys(error).length > 0) {
-        return res
-          .status(400)
-          .send(failure("Data is not provided as per requirement", error));
-      }
-      let result = await Product.insertData(newProduct);
-      let logFileResult = await insertInLog("POST_PRODUCT", result.id);
-      if (result.success) {
-        return res.status(200).send(
-          success("successfully added the data", {
-            ...newProduct,
-            id: result.id,
-          })
-        );
+      const validation = validationResult(req).array();
+      // console.log(validation);
+      if (validation.length === 0) {
+        let result = await Product.insertData(newProduct);
+        let logFileResult = await insertInLog("POST_PRODUCT", result.id);
+        if (result.success) {
+          return res.status(200).send(
+            success("successfully added the data", {
+              ...newProduct,
+              id: result.id,
+            })
+          );
+        } else {
+          return res.status(400).send(failure("failed to add the data"));
+        }
       } else {
-        return res.status(400).send(failure("failed to add the data"));
+        return res
+          .status(422)
+          .send(failure("Invalid inputs provided", validation));
       }
     } catch (e) {
       return res.status(400).send(failure("Internal error occured"));

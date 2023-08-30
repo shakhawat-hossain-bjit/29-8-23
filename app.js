@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-app.use(express.json());
+var cookieParser = require("cookie-parser");
 
 const dotenv = require("dotenv");
 const productRouter = require("./routes/products.route");
@@ -8,6 +8,9 @@ const userRouter = require("./routes/users.route");
 const orderRouter = require("./routes/orders.route");
 const { failure, success } = require("./utils/common");
 dotenv.config();
+
+app.use(express.json());
+app.use(cookieParser());
 
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {

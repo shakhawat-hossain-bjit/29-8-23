@@ -160,5 +160,12 @@
         "orders": [
             "o-1010"
         ]
+    },
+    {
+        "email": "shihabchtg@gmail.com",
+        "password": "$2b$10$uZPnCQDtjPMgGC6efn0o5uQhfBxbjecAexvPGSBS1TPludqsUb7iK",
+        "firstName": "Shakhawat",
+        "lastName": "Hossain",
+        "id": 9
     }
 ]

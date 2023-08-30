@@ -1,8 +1,78 @@
 const fs = require("fs");
 const path = require("path");
 const fsPromise = require("fs").promises;
+const bcrypt = require("bcrypt");
 
 class User {
+  async createUser(newUser) {
+    return fsPromise
+      .readFile(path.join(__dirname, "..", "data", "user.json"), {
+        encoding: "utf-8",
+      })
+      .then((data) => {
+        const jsonData = JSON.parse(data);
+        return jsonData;
+      })
+      .then((jsonData) => {
+        // console.log("jsonData & newUser ", jsonData, newUser);
+        // console.log("id ", jsonData[jsonData.length - 1].id + 1);
+        let id = jsonData[jsonData.length - 1].id + 1;
+        newUser = {
+          ...newUser,
+          id: id,
+          confirmPassword: undefined,
+        };
+        const saltRounds = 10;
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hash = bcrypt.hashSync(newUser.password, salt);
+        newUser.password = hash;
+        jsonData.push(newUser);
+        return fsPromise
+          .writeFile(
+            path.join(__dirname, "..", "data", "user.json"),
+            JSON.stringify(jsonData)
+          )
+          .then((res) => {
+            return { success: true, id };
+          })
+          .catch((e) => {
+            // console.log("error in writing in the file");
+            return { success: false };
+          });
+      })
+      .catch((error) => {
+        // console.log("error in reading the file", error);
+        return { success: false };
+      });
+  }
+
+  async logInUser(user) {
+    return fsPromise
+      .readFile(path.join(__dirname, "..", "data", "user.json"), {
+        encoding: "utf-8",
+      })
+      .then((data) => {
+        const jsonData = JSON.parse(data);
+        return jsonData;
+      })
+      .then((jsonData) => {
+        user.email = user?.email?.toLowerCase();
+        let found = jsonData.find((x) => x?.email == user?.email);
+        if (found) {
+          let isMatched = bcrypt.compareSync(user.password, found?.password);
+          // console.log("isMatched ", isMatched);
+          if (isMatched) return { success: true };
+          else return { success: false };
+        } else {
+          return { success: false };
+        }
+      })
+      .catch((error) => {
+        // console.log("error in reading the file", error);
+        return { success: false };
+      });
+  }
+
   async getOrdersByUserId(id) {
     return fsPromise
       .readFile(path.join(__dirname, "..", "data", "user.json"), {

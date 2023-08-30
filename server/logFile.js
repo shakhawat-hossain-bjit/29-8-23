@@ -46,6 +46,9 @@ async function insertInLog(operation, parameter = null) {
     if (operation == "FILTER_PRICE") {
       message.price = parameter;
     }
+    if (operation == "LOG_IN" || operation == "SIGN_UP") {
+      message.email = parameter;
+    }
 
     const filePath = path.join(__dirname, "log.json");
     // console.log(filePath);
