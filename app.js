@@ -3,7 +3,9 @@ const app = express();
 app.use(express.json());
 
 const dotenv = require("dotenv");
-const router = require("./routes/products.route");
+const productRouter = require("./routes/products.route");
+const userRouter = require("./routes/users.route");
+const orderRouter = require("./routes/orders.route");
 const { failure, success } = require("./utils/common");
 dotenv.config();
 
@@ -15,7 +17,9 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.use("/products", router);
+app.use("/products", productRouter);
+app.use("/users", userRouter);
+app.use("/orders", orderRouter);
 
 app.get("/", (req, res) => {
   return res.status(200).send(success("Hello world"));

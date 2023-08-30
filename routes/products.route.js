@@ -3,7 +3,7 @@ const ProductController = require("../controllers/products.controller");
 const productValidator = require("../middleware/validator");
 const router = express.Router();
 
-router.get("/", ProductController.fetchAll);
+router.get("/all", ProductController.fetchAll);
 router.get("/find-by-id/:id", ProductController.findById);
 router.delete("/delete/:id", ProductController.deleteOne);
 

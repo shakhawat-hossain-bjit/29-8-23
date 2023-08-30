@@ -9,13 +9,18 @@ class ProductController {
       let logFileResult = await insertInLog("GET_ALL_PRODUCT");
       // console.log(result);
       if (result.success) {
-        return res
-          .status(200)
-          .send(success("Successfully fetched all the data", result?.data));
+        if (result?.data?.length) {
+          return res
+            .status(200)
+            .send(success("Successfully fetched all the data", result?.data));
+        } else {
+          return res.status(400).send(failure("There is no data"));
+        }
       } else {
         return res.status(400).send(failure("Failed to fetch the data"));
       }
     } catch (e) {
+      console.log(e);
       return res.status(400).send(failure("Internal error occured"));
     }
   };
